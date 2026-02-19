@@ -545,6 +545,7 @@ require("lazy").setup({
 			-- Enable the following language servers
 			local servers = {
 				pyright = {},
+				clangd = {},
 				rust_analyzer = {
 					cmd = { "rustup", "run", "stable", "rust-analyzer" },
 				},
