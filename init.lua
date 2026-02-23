@@ -364,7 +364,7 @@ require("lazy").setup({
 
 			-- Shortcut for searching your Neovim configuration files
 			vim.keymap.set("n", "<leader>sn", function()
-				builtin.find_files({ cwd = vim.fn.stdpath("config"), hidden = true, no_ignore = true })
+				builtin.find_files({ cwd = vim.fn.stdpath("config"), hidden = true, no_ignore = true, follow = true })
 			end, { desc = "[S]earch [N]eovim files" })
 		end,
 	},
