@@ -545,7 +545,16 @@ require("lazy").setup({
 			-- Enable the following language servers
 			local servers = {
 				pyright = {},
-				clangd = {},
+				clangd = {
+					cmd = {
+						"clangd",
+						"--background-index",
+						"--clang-tidy",
+						"--completion-style=detailed",
+						"--function-arg-placeholders",
+						"--fallback-style=llvm",
+					},
+				},
 				rust_analyzer = {
 					cmd = { "rustup", "run", "stable", "rust-analyzer" },
 				},
@@ -597,7 +606,7 @@ require("lazy").setup({
 				-- Disable "format_on_save lsp_fallback" for languages that don't
 				-- have a well standardized coding style. You can add additional
 				-- languages here or re-enable it for the disabled ones.
-				local disable_filetypes = { c = true, cpp = true }
+				local disable_filetypes = {}
 				if disable_filetypes[vim.bo[bufnr].filetype] then
 					return nil
 				else
@@ -610,6 +619,8 @@ require("lazy").setup({
 			formatters_by_ft = {
 				lua = { "stylua" },
 				rust = { "rustfmt" },
+				c = { "clang-format" },
+				cpp = { "clang-format" },
 				-- Conform can also run multiple formatters sequentially
 				-- python = { "isort", "black" },
 				--
@@ -641,12 +652,12 @@ require("lazy").setup({
 					-- `friendly-snippets` contains a variety of premade snippets.
 					--    See the README about individual language/framework/plugin snippets:
 					--    https://github.com/rafamadriz/friendly-snippets
-					-- {
-					--   'rafamadriz/friendly-snippets',
-					--   config = function()
-					--     require('luasnip.loaders.from_vscode').lazy_load()
-					--   end,
-					-- },
+					{
+						"rafamadriz/friendly-snippets",
+						config = function()
+							require("luasnip.loaders.from_vscode").lazy_load()
+						end,
+					},
 				},
 				opts = {},
 			},
@@ -788,6 +799,11 @@ require("lazy").setup({
 		--    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
 		--    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
 		config = function()
+			require("nvim-treesitter").setup({
+				ensure_installed = { "c", "cpp", "lua", "python", "rust", "vim", "vimdoc" },
+				auto_install = true,
+			})
+
 			-- Auto start treesitter if a parser is available.
 			vim.api.nvim_create_autocmd("FileType", {
 				callback = function(args)
